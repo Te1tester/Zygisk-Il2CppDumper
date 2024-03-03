@@ -6,6 +6,6 @@
 #define ZYGISK_IL2CPPDUMPER_GAME_H
 
 #define GamePackageName "com.game.packagename"
-#define SLEEPTIME 120
+#define SLEEPTIME 60
 
 #endif //ZYGISK_IL2CPPDUMPER_GAME_H
