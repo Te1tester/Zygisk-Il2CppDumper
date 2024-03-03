@@ -418,7 +418,7 @@ void il2cpp_dump(const char *outDir) {
         }
     }
     LOGI("write dump file");
-    auto outPath = std::string(outDir).append("/files/" + GamePackageName + "_dump.cs");
+    auto outPath = std::string(outDir).append("/files/").append(GamePackageName).append("_dump.cs");
     std::ofstream outStream(outPath);
     outStream << imageOutput.str();
     auto count = outPuts.size();
