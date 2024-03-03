@@ -100,7 +100,7 @@ std::string dump_method(Il2CppClass *klass) {
     while (auto method = il2cpp_class_get_methods(klass, &iter)) {
         //TODO attribute
         if (method->methodPointer) {
-            sleep(0.001);
+            usleep(1000);
             outPut << "\t// RVA: 0x";
             outPut << std::hex << (uint64_t) method->methodPointer - il2cpp_base;
             outPut << " VA: 0x";
