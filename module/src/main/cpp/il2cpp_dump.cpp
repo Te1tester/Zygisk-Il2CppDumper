@@ -337,7 +337,7 @@ void il2cpp_api_init(void *handle) {
     }
     while (!il2cpp_is_vm_thread(nullptr)) {
         LOGI("Waiting for il2cpp_init...");
-        sleep(1);
+        sleep(SLEEPTIME);
     }
     auto domain = il2cpp_domain_get();
     il2cpp_thread_attach(domain);
@@ -417,7 +417,7 @@ void il2cpp_dump(const char *outDir) {
         }
     }
     LOGI("write dump file");
-    auto outPath = std::string(outDir).append("/files/dump.cs");
+    auto outPath = std::string(outDir).append("/files/" + GamePackageName + "_dump.cs");
     std::ofstream outStream(outPath);
     outStream << imageOutput.str();
     auto count = outPuts.size();
