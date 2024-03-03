@@ -338,7 +338,7 @@ void il2cpp_api_init(void *handle) {
     }
     while (!il2cpp_is_vm_thread(nullptr)) {
         LOGI("Waiting for il2cpp_init...");
-        sleep(SLEEPTIME);
+        sleep(2);
     }
     auto domain = il2cpp_domain_get();
     il2cpp_thread_attach(domain);
