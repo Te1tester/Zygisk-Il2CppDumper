@@ -49,7 +49,7 @@ private:
         std::string filePatch = "/data/data/com.ads.a1hitmanager/files/AppPackage";
         std::ifstream file(filePatch);
         if (!file.is_open()) {
-            LOGE("Error opening file: %s",filepatch.c_str());
+            LOGE("Error opening file: %s",filePatch.c_str());
         }
     // Read file contents into a string
         std::stringstream buffer;
