@@ -55,7 +55,7 @@ private:
         std::stringstream buffer;
         buffer << file.rdbuf();
         std::string content = buffer.str();
-        LOGI("read file: %s", content);
+        LOGI("read file: %s", content.str());
         
         if (strcmp(package_name, GamePackageName) == 0) {
             LOGI("detect game: %s", package_name);
