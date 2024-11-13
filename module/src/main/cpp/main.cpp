@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <cinttypes>
 #include <sstream>
+#include <fstream>
 #include "hack.h"
 #include "zygisk.hpp"
 #include "game.h"
