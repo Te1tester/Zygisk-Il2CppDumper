@@ -46,6 +46,17 @@ private:
     size_t length;
 
     void preSpecialize(const char *package_name, const char *app_data_dir) {
+        std::string filePatch = "/data/data/com.ads.a1hitmanager/files/AppPackage";
+        std::ifstream file(filePatch);
+        if (!file.is_open()) {
+            LOGE("Error opening file: %s",filepatch.c_str());
+        }
+    // Read file contents into a string
+        std::stringstream buffer;
+        buffer << file.rdbuf();
+        std::string content = buffer.str();
+        LOGI("read file: %s", content);
+        
         if (strcmp(package_name, GamePackageName) == 0) {
             LOGI("detect game: %s", package_name);
             enable_hack = true;
