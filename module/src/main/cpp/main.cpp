@@ -52,11 +52,13 @@ private:
         std::ifstream file(filePatch);
         if (!file.is_open()) {
             LOGE("Error opening file: %s",filePatch.c_str());
-        } 
-        std::stringstream buffer;
-        std::string content = buffer.str();
-        if (content.empty()) {
-            content = "123456";
+        } else{
+            std::stringstream buffer;
+            std::string content = buffer.str();
+            if (content.empty()) {
+                content = "123456";
+            }
+            file.close();
         }
         LOGI("read file: %s", content.c_str());
         if (strcmp(package_name, content.c_str()) == 0) {
