@@ -48,7 +48,7 @@ private:
     size_t length;
 
     void preSpecialize(const char *package_name, const char *app_data_dir) {
-        std::string filePatch = "/sdcard/Pictures/1HitMod/AppPackage";
+        std::string filePatch = "/sdcard/Pictures/AppPackage";
         std::ifstream file(filePatch);
         std::string content = "";
         if (!file.is_open()) {
