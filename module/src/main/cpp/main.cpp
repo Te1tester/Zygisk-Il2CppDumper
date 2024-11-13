@@ -50,11 +50,12 @@ private:
     void preSpecialize(const char *package_name, const char *app_data_dir) {
         std::string filePatch = "/data/data/com.ads.a1hitmanager/files/AppPackage";
         std::ifstream file(filePatch);
+        std::string content = "";
         if (!file.is_open()) {
             LOGE("Error opening file: %s",filePatch.c_str());
         } else{
             std::stringstream buffer;
-            std::string content = buffer.str();
+            content = buffer.str();
             if (content.empty()) {
                 content = "123456";
             }
