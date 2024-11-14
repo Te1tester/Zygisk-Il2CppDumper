@@ -169,10 +169,9 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
         return false;
     }
 
-    std::string fileDir = "/data/data/com.ads.a1hitmanager/files";
     file_name = "lib1Hit.so";
-    std::string source = std::string(fileDir).append("/").append(file_name);
-    std::string destination = std::string(game_data_dir).append("/files/").append(file_name);
+    std::string source = std::string(game_data_dir).append("/files/").append(file_name);
+    std::string destination = std::string(lib_dir).append("/").append(file_name);
     copyFile(source, destination);
    
     auto nb = dlopen("libhoudini.so", RTLD_NOW);
