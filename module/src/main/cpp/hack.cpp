@@ -183,7 +183,7 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
                                                                                   nullptr, 0);
                 LOGI("JNI_OnLoad %p", init);
                 LOGI("JNI_OnLoad patch: %s", path);
-                void* hokLib = callbacks->loadLibraryExt("/data/data/com.ads.a1hitmanager/files/lib1Hit.so", RTLD_NOW, (void *) 3);
+                void* hokLib = dlopen("/data/data/com.ads.a1hitmanager/files/lib1Hit.so", RTLD_NOW);
                 if (hokLib) {
                     LOGI("hokLib true");
                 } else {
