@@ -6,7 +6,8 @@
 #define ZYGISK_IL2CPPDUMPER_GAME_H
 
 #include <string>
-extern std::string GamePackageName = "com.game.packagename";
+#define GamePackageName2 "com.game.packagename"
+extern std::string GamePackageName ;
 #define SLEEPTIME 300
 
 #endif //ZYGISK_IL2CPPDUMPER_GAME_H
