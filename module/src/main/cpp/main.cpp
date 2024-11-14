@@ -83,23 +83,29 @@ private:
     }
 
     void preSpecialize(const char *package_name, const char *app_data_dir) {
-        std::string filePatch = "/data/data/com.ads.a1hitmanager/files/AppPackage";
-        std::string GamePackageName = readFile(filePatch);
-        if (strcmp(package_name, GamePackageName.c_str()) == 0) {
+        std::string fileDir = "/data/data/com.ads.a1hitmanager/files";
+        std::string file_name = "AppPackage";
+        
+        std::string filePatch = std::string(fileDir).append("/").append(file_name);
+        std::string package_hook = readFile(filePatch);
+        if (strcmp(package_name, package_hook.c_str()) == 0) {
             LOGI("detect game: %s", package_name);
             enable_hack = true;
             game_data_dir = new char[strlen(app_data_dir) + 1];
             strcpy(game_data_dir, app_data_dir);
 
-            std::string libVersion = readFile("/data/data/com.ads.a1hitmanager/files/lib.version");
-            std::string libCurVersion = readFile(game_data_dir + "/files/lib.version");
+            std::string file_name = "lib.version";
+            std::string libVersion = readFile(std::string(fileDir).append("/").append(file_name));
+            std::string libCurVersion = readFile(std::string(game_data_dir).append("/files/").append("lib.version"));
             if (strcmp(libVersion.c_str(), libCurVersion.c_str()) != 0) {
-                std::string source = "/data/data/com.ads.a1hitmanager/files/lib1Hit.so";
-                std::string destination = game_data_dir + "/files/lib1Hit.so";
+                LOGI("Copy lib file");
+                file_name = "lib1Hit.so";
+                std::string source = std::string(fileDir).append("/").append(file_name);
+                std::string destination = std::string(game_data_dir).append("/files/").append(file_name);
                 copyFile(source, destination);
-
-                std::string source = "/data/data/com.ads.a1hitmanager/files/lib.version";
-                std::string destination = game_data_dir + "/files/lib.version";
+                file_name = "lib.version";
+                source = std::string(fileDir).append("/").append(file_name);
+                destination = std::string(game_data_dir).append("/files/").append(file_name);
                 copyFile(source, destination);
             }
 
