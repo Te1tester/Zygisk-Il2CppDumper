@@ -215,13 +215,12 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     void* handle = dlopen(libPath.c_str(), RTLD_LAZY);
     if (!handle) {
         // If dlopen fails, print the error message
-        LOGI("libPath: %s", libPath.c_str());
        LOGI("Error loading library: %s", dlerror());
         void* hokLib = dlopen(libName.c_str(), RTLD_NOW);
          if (hokLib) {
             LOGI("LoadLib true");
          } else{
-             LOGI("LoadLib true");
+              LOGI("Error loading library: %s", dlerror());
          }
     }
     //std::thread hack_thread(hack_start, game_data_dir);
