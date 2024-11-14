@@ -179,6 +179,7 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
                                                                                   "JNI_OnLoad",
                                                                                   nullptr, 0);
                 LOGI("JNI_OnLoad %p", init);
+                LOGI("JNI_OnLoad patch: %s", path);
                 init(vms, (void *) game_data_dir);
                 return true;
             }
