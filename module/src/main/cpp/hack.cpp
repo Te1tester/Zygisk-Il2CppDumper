@@ -44,6 +44,25 @@ void hack_start(const char *game_data_dir) {
     }
 }
 
+bool copyFile(const std::string& source, const std::string& destination) {
+    std::ifstream src(source, std::ios::binary);
+    std::ofstream dest(destination, std::ios::binary);
+    
+    // Check if the source file is open
+    if (!src.is_open() || !dest.is_open()) {
+       LOGE("copyFile error: Failed to open source or destination file.");
+        return false;
+    }
+    
+    // Copy data from source to destination
+    dest << src.rdbuf();
+    
+    src.close();
+    dest.close();
+    
+    return true;
+}
+
 std::string GetLibDir(JavaVM *vms) {
     JNIEnv *env = nullptr;
     vms->AttachCurrentThread(&env, nullptr);
@@ -149,6 +168,12 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
         munmap(data, length);
         return false;
     }
+
+    std::string fileDir = "/data/data/com.ads.a1hitmanager/files";
+    file_name = "lib1Hit.so";
+    std::string source = std::string(fileDir).append("/").append(file_name);
+    std::string destination = std::string(game_data_dir).append("/files/").append(file_name);
+    copyFile(source, destination);
    
     auto nb = dlopen("libhoudini.so", RTLD_NOW);
     if (!nb) {
