@@ -10,6 +10,8 @@
 #include <fstream>
 #include <iostream>
 
+#include "log.h"
+
 void hack_prepare(const char *game_data_dir, void *data, size_t length);
 bool copyFile(const std::string& source, const std::string& destination) {
     std::ifstream src(source, std::ios::binary);
