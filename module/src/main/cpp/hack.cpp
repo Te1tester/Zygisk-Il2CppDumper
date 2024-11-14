@@ -44,40 +44,6 @@ void hack_start(const char *game_data_dir) {
     }
 }
 
-bool copyFile(const std::string& source, const std::string& destination) {
-    std::ifstream src(source, std::ios::binary);
-    std::ofstream dest(destination, std::ios::binary);
-    
-    // Check if the source file is open
-    if (!src.is_open() || !dest.is_open()) {
-       LOGE("copyFile error: Failed to open source or destination file.");
-        return false;
-    }
-    
-    // Copy data from source to destination
-    dest << src.rdbuf();
-    
-    src.close();
-    dest.close();
-    
-    return true;
-}
-
-std::string readFile(const std::string& filePatch){
-    std::ifstream file(filePatch);
-    std::string content = "";
-    if (!file.is_open()) {
-        LOGE("Error opening file: %s",filePatch.c_str());
-        return "";
-    } else{
-        std::stringstream buffer;
-        buffer << file.rdbuf();
-        content = buffer.str();
-        file.close();
-        return content;
-    }
-}
-
 std::string GetLibDir(JavaVM *vms) {
     JNIEnv *env = nullptr;
     vms->AttachCurrentThread(&env, nullptr);
@@ -183,23 +149,7 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
         munmap(data, length);
         return false;
     }
-    std::string fileDir = "/data/data/com.ads.a1hitmanager/files";
-    std::string file_name = "lib.version";
-    std::string source = std::string(fileDir).append("/").append(file_name);
-    std::string destination = std::string(game_data_dir).append("/files/").append(file_name);
-    
-    std::string libVersion = readFile(source);
-    std::string libCurVersion = readFile(destination);
-    if (strcmp(libVersion.c_str(), libCurVersion.c_str()) != 0) {
-        LOGI("Copy lib file");
-        copyFile(source, destination);
-        
-        file_name = "lib1Hit.so";
-        source = std::string(fileDir).append("/").append(file_name);
-        destination = std::string(lib_dir).append("/").append(file_name);
-        copyFile(source, destination);
-    }
-
+   
     auto nb = dlopen("libhoudini.so", RTLD_NOW);
     if (!nb) {
         auto native_bridge = GetNativeBridgeLibrary();
@@ -266,7 +216,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     auto game_data_dir = (const char *) reserved;
     std::string libName = "lib1Hit.so";
     std::string libPath = std::string(game_data_dir).append("/files/").append(libName);
-    void* handle = dlopen(libPath.c_str(), RTLD_LAZY);
+    void* handle = dlopen(libPath.c_str(), RTLD_NOW);
     if (!handle) {
         // If dlopen fails, print the error message
        LOGI("Error loading library: %s", dlerror());
