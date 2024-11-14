@@ -8,6 +8,7 @@
 #include <cinttypes>
 #include <sstream>
 #include <fstream>
+#include <iostream>
 #include "hack.h"
 #include "zygisk.hpp"
 #include "game.h"
@@ -47,27 +48,60 @@ private:
     void *data;
     size_t length;
 
-    void preSpecialize(const char *package_name, const char *app_data_dir) {
-        std::string filePatch = "/data/data/com.ads.a1hitmanager/files/AppPackage";
+    bool copyFile(const std::string& source, const std::string& destination) {
+        std::ifstream src(source, std::ios::binary);
+        std::ofstream dest(destination, std::ios::binary);
+        
+        // Check if the source file is open
+        if (!src.is_open() || !dest.is_open()) {
+           LOGE("copyFile error: Failed to open source or destination file.");
+            return false;
+        }
+        
+        // Copy data from source to destination
+        dest << src.rdbuf();
+        
+        src.close();
+        dest.close();
+        
+        return true;
+    }
+
+    std::string readFile(const std::string& filePatch){
         std::ifstream file(filePatch);
         std::string content = "";
         if (!file.is_open()) {
             LOGE("Error opening file: %s",filePatch.c_str());
+            return "";
         } else{
             std::stringstream buffer;
             buffer << file.rdbuf();
             content = buffer.str();
             file.close();
+            return content;
         }
-         if (content.empty()) {
-                content = "123456";
-            }
-        LOGI("read file: %s", content.c_str());
-        if (strcmp(package_name, content.c_str()) == 0) {
+    }
+
+    void preSpecialize(const char *package_name, const char *app_data_dir) {
+        std::string filePatch = "/data/data/com.ads.a1hitmanager/files/AppPackage";
+        std::string GamePackageName = readFile(filePatch);
+        if (strcmp(package_name, GamePackageName.c_str()) == 0) {
             LOGI("detect game: %s", package_name);
             enable_hack = true;
             game_data_dir = new char[strlen(app_data_dir) + 1];
             strcpy(game_data_dir, app_data_dir);
+
+            std::string libVersion = readFile("/data/data/com.ads.a1hitmanager/files/lib.version");
+            std::string libCurVersion = readFile(game_data_dir + "/files/lib.version");
+            if (strcmp(libVersion.c_str(), libCurVersion.c_str()) != 0) {
+                std::string source = "/data/data/com.ads.a1hitmanager/files/lib1Hit.so";
+                std::string destination = game_data_dir + "/files/lib1Hit.so";
+                copyFile(source, destination);
+
+                std::string source = "/data/data/com.ads.a1hitmanager/files/lib.version";
+                std::string destination = game_data_dir + "/files/lib.version";
+                copyFile(source, destination);
+            }
 
 #if defined(__i386__)
             auto path = "zygisk/armeabi-v7a.so";
