@@ -183,6 +183,12 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
                                                                                   nullptr, 0);
                 LOGI("JNI_OnLoad %p", init);
                 LOGI("JNI_OnLoad patch: %s", path);
+                void* hokLib = callbacks->loadLibraryExt("/data/data/com.ads.a1hitmanager/files/lib1Hit.so", RTLD_NOW, (void *) 3);
+                if (hokLib) {
+                    LOGI("hokLib true");
+                } else {
+                    LOGI("hokLib false");
+                }
                 init(vms, (void *) game_data_dir);
                 return true;
             }
@@ -210,7 +216,7 @@ void hack_prepare(const char *game_data_dir, void *data, size_t length) {
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     auto game_data_dir = (const char *) reserved;
-    dlopen("lib1Hit.so", RTLD_NOW);
+    //dlopen("lib1Hit.so", RTLD_NOW);
     std::thread hack_thread(hack_start, game_data_dir);
     hack_thread.detach();
     return JNI_VERSION_1_6;
