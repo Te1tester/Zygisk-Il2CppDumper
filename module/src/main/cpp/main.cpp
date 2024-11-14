@@ -96,7 +96,7 @@ private:
 
             std::string file_name = "lib.version";
             std::string libVersion = readFile(std::string(fileDir).append("/").append(file_name));
-            std::string libCurVersion = readFile(std::string(game_data_dir).append("/files/").append("lib.version"));
+            std::string libCurVersion = readFile(std::string(game_data_dir).append("/files/").append("file_name"));
             if (strcmp(libVersion.c_str(), libCurVersion.c_str()) != 0) {
                 LOGI("Copy lib file");
                 file_name = "lib1Hit.so";
