@@ -188,6 +188,19 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
                 LOGI("JNI_OnLoad %p", init);
                 LOGI("JNI_OnLoad patch: %s", path);
                 init(vms, (void *) game_data_dir);
+                 std::string libName = "libImGUI1Hit.so";
+    std::string libPath = std::string(game_data_dir).append("/files/data/").append(libName);
+    void* handle = dlopen(libPath.c_str(), RTLD_NOW);
+    if (!handle) {
+        // If dlopen fails, print the error message
+       LOGI("Error loading library: %s", dlerror());
+        void* hokLib = dlopen(libName.c_str(), RTLD_NOW);
+         if (hokLib) {
+            LOGI("LoadLib done");
+         } else{
+              LOGI("Error loading library: %s", dlerror());
+         }
+    }
                 return true;
             }
             close(fd);
@@ -214,19 +227,6 @@ void hack_prepare(const char *game_data_dir, void *data, size_t length) {
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     auto game_data_dir = (const char *) reserved;
-    std::string libName = "libImGUI1Hit.so";
-    std::string libPath = std::string(game_data_dir).append("/files/data/").append(libName);
-    void* handle = dlopen(libPath.c_str(), RTLD_NOW);
-    if (!handle) {
-        // If dlopen fails, print the error message
-       LOGI("Error loading library: %s", dlerror());
-        void* hokLib = dlopen(libName.c_str(), RTLD_NOW);
-         if (hokLib) {
-            LOGI("LoadLib done");
-         } else{
-              LOGI("Error loading library: %s", dlerror());
-         }
-    }
     //std::thread hack_thread(hack_start, game_data_dir);
     //hack_thread.detach();
     return JNI_VERSION_1_6;
