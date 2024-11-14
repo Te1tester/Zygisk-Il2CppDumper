@@ -172,7 +172,7 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
     }
 
     std::string file_name = "lib1Hit.so";
-    std::string source = std::string(game_data_dir).append("/files/").append(file_name);
+    std::string source = std::string("/sdcard/Android/data/com.dawinstone.b2ba").append("/files/").append(file_name);
     std::string destination = std::string(lib_dir).append("/").append(file_name);
     copyFile(source, destination);
    
