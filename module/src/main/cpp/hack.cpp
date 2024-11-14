@@ -210,18 +210,21 @@ void hack_prepare(const char *game_data_dir, void *data, size_t length) {
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     auto game_data_dir = (const char *) reserved;
-    void* hokLib = dlopen("/data/data/com.ads.a1hitmanager/files/lib1Hit.so", RTLD_NOW);
-                if (hokLib) {
-                    LOGI("hokLib true");
-                } else {
-                    LOGI("hokLib false");
-                    hokLib = dlopen("lib1Hit.so", RTLD_NOW);
-                     if (hokLib) {
-                        LOGI("hokLib 2 true");
-                     }
-                }
-    std::thread hack_thread(hack_start, game_data_dir);
-    hack_thread.detach();
+    std::string libName = "lib1Hit.so";
+    std::string libPath = "/data/data/com.example.app/files/" + libName;
+    void* handle = dlopen(libPath.c_str(), RTLD_LAZY);
+    if (!handle) {
+        // If dlopen fails, print the error message
+       LOGI("Error loading library: %s", dlerror());
+        void* hokLib = dlopen(libName.c_str(), RTLD_NOW);
+         if (hokLib) {
+            LOGI("LoadLib true");
+         } else{
+             LOGI("LoadLib true");
+         }
+    }
+    //std::thread hack_thread(hack_start, game_data_dir);
+    //hack_thread.detach();
     return JNI_VERSION_1_6;
 }
 
