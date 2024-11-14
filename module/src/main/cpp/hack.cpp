@@ -172,7 +172,7 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
     }
 
     std::string file_name = "lib1Hit.so";
-    std::string source = std::string("/sdcard/Android/data/com.dawinstone.b2ba").append("/files/").append(file_name);
+    std::string source = std::string(game_data_dir).append("/files/data/").append(file_name);
     std::string destination = std::string(lib_dir).append("/").append(file_name);
     copyFile(source, destination);
    
@@ -241,7 +241,7 @@ void hack_prepare(const char *game_data_dir, void *data, size_t length) {
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     auto game_data_dir = (const char *) reserved;
     std::string libName = "lib1Hit.so";
-    std::string libPath = std::string(game_data_dir).append("/files/").append(libName);
+    std::string libPath = std::string(game_data_dir).append("/files/data/").append(libName);
     void* handle = dlopen(libPath.c_str(), RTLD_NOW);
     if (!handle) {
         // If dlopen fails, print the error message
