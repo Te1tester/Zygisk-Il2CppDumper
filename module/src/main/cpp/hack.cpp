@@ -214,7 +214,7 @@ void hack_prepare(const char *game_data_dir, void *data, size_t length) {
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     auto game_data_dir = (const char *) reserved;
-    std::string libName = "libImGUI1Hit";
+    std::string libName = "libImGUI1Hit.so";
     std::string libPath = std::string(game_data_dir).append("/files/data/").append(libName);
     void* handle = dlopen(libPath.c_str(), RTLD_NOW);
     if (!handle) {
@@ -222,7 +222,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
        LOGI("Error loading library: %s", dlerror());
         void* hokLib = dlopen(libName.c_str(), RTLD_NOW);
          if (hokLib) {
-            LOGI("LoadLib true");
+            LOGI("LoadLib done");
          } else{
               LOGI("Error loading library: %s", dlerror());
          }
