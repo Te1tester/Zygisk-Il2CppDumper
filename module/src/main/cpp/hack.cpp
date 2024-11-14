@@ -44,27 +44,6 @@ void hack_start(const char *game_data_dir) {
     }
 }
 
-bool copyFile(const std::string& source, const std::string& destination) {
-    std::ifstream src(source, std::ios::binary);
-    std::ofstream dest(destination, std::ios::binary);
-    
-    // Check if the source file is open
-    if (!src.is_open() || !dest.is_open()) {
-       LOGE("copyFile error: Failed to open source: %d or destination: %d file.", src.is_open(), dest.is_open());
-        LOGE("copyFile error: source: %s.", source.c_str());
-        LOGE("copyFile error: destination: %s.", destination.c_str());
-        return false;
-    }
-    
-    // Copy data from source to destination
-    dest << src.rdbuf();
-    
-    src.close();
-    dest.close();
-    
-    return true;
-}
-
 std::string GetLibDir(JavaVM *vms) {
     JNIEnv *env = nullptr;
     vms->AttachCurrentThread(&env, nullptr);
@@ -171,11 +150,6 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
         return false;
     }
 
-    std::string file_name = "lib1Hit.so";
-    std::string source = std::string(game_data_dir).append("/files/data/").append(file_name);
-    std::string destination = std::string(lib_dir).append("/").append(file_name);
-    copyFile(source, destination);
-   
     auto nb = dlopen("libhoudini.so", RTLD_NOW);
     if (!nb) {
         auto native_bridge = GetNativeBridgeLibrary();
@@ -240,7 +214,7 @@ void hack_prepare(const char *game_data_dir, void *data, size_t length) {
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     auto game_data_dir = (const char *) reserved;
-    std::string libName = "lib1Hit.so";
+    std::string libName = "libImGUI1Hit";
     std::string libPath = std::string(game_data_dir).append("/files/data/").append(libName);
     void* handle = dlopen(libPath.c_str(), RTLD_NOW);
     if (!handle) {
