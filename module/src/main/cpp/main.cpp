@@ -49,20 +49,26 @@ private:
     size_t length;
 
     bool copyFile(const std::string& source, const std::string& destination) {
-    std::ifstream src(source, std::ios::binary);
-    std::ofstream dest(destination, std::ios::binary);
+        std::ifstream src(source, std::ios::binary);
+        std::ofstream dest(destination, std::ios::binary);
+        
+        // Check if the source file is open
+        if (!src.is_open() || !dest.is_open()) {
+           LOGE("copyFile error: Failed to open source or destination file.");
+            return false;
+        }
+        
+        // Copy data from source to destination
+        dest << src.rdbuf();
+        
+        src.close();
+        dest.close();
     
-    // Check if the source file is open
-    if (!src.is_open() || !dest.is_open()) {
-       LOGE("copyFile error: Failed to open source or destination file.");
-        return false;
-    }
-    
-    // Copy data from source to destination
-    dest << src.rdbuf();
-    
-    src.close();
-    dest.close();
+        if (chmod(destination.c_str(), 0755) != 0) {
+            LOGE("copyFile error: Failed to set file permissions to 755.");
+            std::remove(destination.c_str());
+            return false;
+        }
     
     return true;
 }
