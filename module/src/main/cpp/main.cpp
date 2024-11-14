@@ -58,7 +58,6 @@ private:
             buffer << file.rdbuf();
             content = buffer.str();
             file.close();
-            GamePackageName = content;
         }
          if (content.empty()) {
                 content = "123456";
