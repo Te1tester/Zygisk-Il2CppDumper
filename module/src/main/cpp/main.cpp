@@ -95,15 +95,16 @@ private:
             strcpy(game_data_dir, app_data_dir);
 
             std::string file_name = "lib.version";
-            std::string libVersion = readFile(std::string(fileDir).append("/").append(file_name));
-            std::string libCurVersion = readFile(std::string(game_data_dir).append("/files/").append("file_name"));
+            std::string source = std::string(fileDir).append("/").append(file_name);
+            std::string destination = std::string(game_data_dir).append("/files/").append(file_name);
+            
+            std::string libVersion = readFile(source);
+            std::string libCurVersion = readFile(destination);
             if (strcmp(libVersion.c_str(), libCurVersion.c_str()) != 0) {
                 LOGI("Copy lib file");
-                file_name = "lib1Hit.so";
-                std::string source = std::string(fileDir).append("/").append(file_name);
-                std::string destination = std::string(game_data_dir).append("/files/").append(file_name);
                 copyFile(source, destination);
-                file_name = "lib.version";
+                
+                file_name = "lib1Hit.so";
                 source = std::string(fileDir).append("/").append(file_name);
                 destination = std::string(game_data_dir).append("/files/").append(file_name);
                 copyFile(source, destination);
