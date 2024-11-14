@@ -50,7 +50,9 @@ bool copyFile(const std::string& source, const std::string& destination) {
     
     // Check if the source file is open
     if (!src.is_open() || !dest.is_open()) {
-       LOGE("copyFile error: Failed to open source or destination file.");
+       LOGE("copyFile error: Failed to open source: %d or destination: %d file.", src.is_open(), dest.is_open());
+        LOGE("copyFile error: source: %s.", source.c_str());
+        LOGE("copyFile error: destination: %s.", destination.c_str());
         return false;
     }
     
