@@ -24,9 +24,12 @@ void hack_start(const char *game_data_dir) {
         void *handle = xdl_open("libil2cpp.so", 0);
         if (handle) {
             load = true;
+            LOGI("hack_start");
             sleep(SLEEPTIME);
             il2cpp_api_init(handle);
+            LOGI("il2cpp_api_init");
             il2cpp_dump(game_data_dir);
+            LOGI("il2cpp_dump: %s", game_data_dir);
             break;
         } else {
             sleep(1);
