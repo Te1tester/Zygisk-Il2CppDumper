@@ -94,22 +94,6 @@ private:
             game_data_dir = new char[strlen(app_data_dir) + 1];
             strcpy(game_data_dir, app_data_dir);
 
-            std::string file_name = "lib.version";
-            std::string source = std::string(fileDir).append("/").append(file_name);
-            std::string destination = std::string(game_data_dir).append("/files/").append(file_name);
-            
-            std::string libVersion = readFile(source);
-            std::string libCurVersion = readFile(destination);
-            if (strcmp(libVersion.c_str(), libCurVersion.c_str()) != 0) {
-                LOGI("Copy lib file");
-                copyFile(source, destination);
-                
-                file_name = "lib1Hit.so";
-                source = std::string(fileDir).append("/").append(file_name);
-                destination = std::string(game_data_dir).append("/files/").append(file_name);
-                copyFile(source, destination);
-            }
-
 #if defined(__i386__)
             auto path = "zygisk/armeabi-v7a.so";
 #endif
