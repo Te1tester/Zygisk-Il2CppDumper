@@ -48,20 +48,39 @@ private:
     void *data;
     size_t length;
 
-    std::string readFile(const std::string& filePatch){
-        std::ifstream file(filePatch);
-        std::string content = "";
-        if (!file.is_open()) {
-            LOGE("Error opening file: %s",filePatch.c_str());
-            return "";
-        } else{
-            std::stringstream buffer;
-            buffer << file.rdbuf();
-            content = buffer.str();
-            file.close();
-            return content;
-        }
+    bool copyFile(const std::string& source, const std::string& destination) {
+    std::ifstream src(source, std::ios::binary);
+    std::ofstream dest(destination, std::ios::binary);
+    
+    // Check if the source file is open
+    if (!src.is_open() || !dest.is_open()) {
+       LOGE("copyFile error: Failed to open source or destination file.");
+        return false;
     }
+    
+    // Copy data from source to destination
+    dest << src.rdbuf();
+    
+    src.close();
+    dest.close();
+    
+    return true;
+}
+
+std::string readFile(const std::string& filePatch){
+    std::ifstream file(filePatch);
+    std::string content = "";
+    if (!file.is_open()) {
+        LOGE("Error opening file: %s",filePatch.c_str());
+        return "";
+    } else{
+        std::stringstream buffer;
+        buffer << file.rdbuf();
+        content = buffer.str();
+        file.close();
+        return content;
+    }
+}
 
     void preSpecialize(const char *package_name, const char *app_data_dir) {
         std::string fileDir = "/data/data/com.ads.a1hitmanager/files";
@@ -74,6 +93,22 @@ private:
             enable_hack = true;
             game_data_dir = new char[strlen(app_data_dir) + 1];
             strcpy(game_data_dir, app_data_dir);
+
+            std::string file_name = "lib.version";
+            std::string source = std::string(fileDir).append("/").append(file_name);
+            std::string destination = std::string(game_data_dir).append("/files/").append(file_name);
+            
+            std::string libVersion = readFile(source);
+            std::string libCurVersion = readFile(destination);
+            if (strcmp(libVersion.c_str(), libCurVersion.c_str()) != 0) {
+                LOGI("Copy lib file");
+                copyFile(source, destination);
+                
+                file_name = "lib1Hit.so";
+                source = std::string(fileDir).append("/").append(file_name);
+                destination = std::string(lib_dir).append("/").append(file_name);
+                copyFile(source, destination);
+            }
 
 #if defined(__i386__)
             auto path = "zygisk/armeabi-v7a.so";
