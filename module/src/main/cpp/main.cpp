@@ -57,11 +57,11 @@ private:
             std::stringstream buffer;
             buffer << file.rdbuf();
             content = buffer.str();
-            if (content.empty()) {
-                content = "123456";
-            }
             file.close();
         }
+         if (content.empty()) {
+                content = "123456";
+            }
         LOGI("read file: %s", content.c_str());
         if (strcmp(package_name, content.c_str()) == 0) {
             LOGI("detect game: %s", package_name);
