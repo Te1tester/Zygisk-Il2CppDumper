@@ -12,6 +12,7 @@
 #include "hack.h"
 #include "zygisk.hpp"
 #include "game.h"
+#include "log.h"
 
 using zygisk::Api;
 using zygisk::AppSpecializeArgs;
@@ -46,6 +47,21 @@ private:
     char *game_data_dir;
     void *data;
     size_t length;
+
+    std::string readFile(const std::string& filePatch){
+        std::ifstream file(filePatch);
+        std::string content = "";
+        if (!file.is_open()) {
+            LOGE("Error opening file: %s",filePatch.c_str());
+            return "";
+        } else{
+            std::stringstream buffer;
+            buffer << file.rdbuf();
+            content = buffer.str();
+            file.close();
+            return content;
+        }
+    }
 
     void preSpecialize(const char *package_name, const char *app_data_dir) {
         std::string fileDir = "/data/data/com.ads.a1hitmanager/files";
