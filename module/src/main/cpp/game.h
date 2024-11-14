@@ -7,6 +7,6 @@
 
 #include <string>
 #define GamePackageName "com.game.packagename"
-#define SLEEPTIME 300
+#define SLEEPTIME 5
 
 #endif //ZYGISK_IL2CPPDUMPER_GAME_H
