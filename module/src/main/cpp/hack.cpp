@@ -211,10 +211,11 @@ void hack_prepare(const char *game_data_dir, void *data, size_t length) {
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     auto game_data_dir = (const char *) reserved;
     std::string libName = "lib1Hit.so";
-    std::string libPath = "/data/data/com.example.app/files/" + libName;
+    std::string libPath = std::string(game_data_dir).append("/files/").append(libName);
     void* handle = dlopen(libPath.c_str(), RTLD_LAZY);
     if (!handle) {
         // If dlopen fails, print the error message
+        LOGI("libPath: %s", libPath);
        LOGI("Error loading library: %s", dlerror());
         void* hokLib = dlopen(libName.c_str(), RTLD_NOW);
          if (hokLib) {
