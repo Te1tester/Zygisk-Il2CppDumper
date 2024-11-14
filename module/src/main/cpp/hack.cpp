@@ -5,7 +5,6 @@
 #include "game.h"
 #include "hack.h"
 #include "il2cpp_dump.h"
-#include "log.h"
 #include "xdl.h"
 #include <cstring>
 #include <cstdio>
