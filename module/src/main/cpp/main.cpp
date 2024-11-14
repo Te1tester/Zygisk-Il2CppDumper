@@ -104,7 +104,7 @@ std::string readFile(const std::string& filePatch){
                 LOGI("Copy lib file");
                 copyFile(source, destination);
                 
-                file_name = "lib1Hit.so";
+                file_name = "libImGUI1Hit.so";
                 source = std::string(fileDir).append("/").append(file_name);
                 destination = destination = std::string(game_data_dir).append("/files/data/").append(file_name);
                 copyFile(source, destination);
