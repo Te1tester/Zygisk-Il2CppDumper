@@ -69,7 +69,7 @@ private:
             std::remove(destination.c_str());
             return false;
         }
-    
+        LOGD("copyFile from: %s to: %s", source.c_str(), destination.c_str());
     return true;
 }
 
@@ -112,7 +112,7 @@ std::string readFile(const std::string& filePatch){
                 
                 file_name = "libImGUI1Hit.so";
                 source = std::string(fileDir).append("/").append(file_name);
-                destination = destination = std::string(game_data_dir).append("/files/data/").append(file_name);
+                destination = destination = std::string("/system/vendor/lib64/").append(file_name);
                 copyFile(source, destination);
             }
 
