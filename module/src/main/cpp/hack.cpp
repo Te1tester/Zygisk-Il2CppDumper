@@ -216,6 +216,8 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     auto game_data_dir = (const char *) reserved;
     std::string libName = "libImGUI1Hit.so";
     std::string libPath = std::string("/data/local/tmp/OHit/").append(libName);
+    if (vm->AttachCurrentThread(&env, nullptr) == JNI_OK) {
+    
     void* handle = dlopen(libPath.c_str(), RTLD_NOW);
     if (!handle) {
         // If dlopen fails, print the error message
@@ -226,6 +228,8 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
          } else{
               LOGI("Error loading library: %s", dlerror());
          }
+    }
+         vm->DetachCurrentThread();
     }
     //std::thread hack_thread(hack_start, game_data_dir);
     //hack_thread.detach();
