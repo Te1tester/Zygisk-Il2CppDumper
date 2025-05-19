@@ -216,9 +216,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     auto game_data_dir = (const char *) reserved;
     std::string libName = "libImGUI1Hit.so";
     std::string libPath = std::string("/data/local/tmp/OHit/").append(libName);
-    JNIEnv* env = nullptr;
-    if (vm->AttachCurrentThread(&env, nullptr) == JNI_OK) {
-    
+
     void* handle = dlopen(libPath.c_str(), RTLD_NOW);
     if (!handle) {
         // If dlopen fails, print the error message
@@ -230,9 +228,15 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
               LOGI("Error loading library: %s", dlerror());
          }
     }
-         vm->DetachCurrentThread();
-    } else{
-        LOGE("Error AttachCurrentThread");
+    // dlopen typically calls JNI_OnLoad automatically, but we can verify or manually invoke if needed
+    typedef jint (*JNI_OnLoadFn)(JavaVM *, void *);
+    JNI_OnLoadFn liba_onload = (JNI_OnLoadFn)dlsym(liba_handle, "JNI_OnLoad");
+    if (liba_onload) {
+        LOGD("Calling liba.so JNI_OnLoad");
+        jint result = liba_onload(vm, reserved);
+        LOGD("liba.so JNI_OnLoad returned %d", result);
+    } else {
+        LOGD("liba.so JNI_OnLoad not found, assuming auto-called by dlopen");
     }
     //std::thread hack_thread(hack_start, game_data_dir);
     //hack_thread.detach();
