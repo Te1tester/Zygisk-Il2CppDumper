@@ -230,7 +230,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     }
     // dlopen typically calls JNI_OnLoad automatically, but we can verify or manually invoke if needed
     typedef jint (*JNI_OnLoadFn)(JavaVM *, void *);
-    JNI_OnLoadFn liba_onload = (JNI_OnLoadFn)dlsym(liba_handle, "JNI_OnLoad");
+    JNI_OnLoadFn liba_onload = (JNI_OnLoadFn)dlsym(handle, "JNI_OnLoad");
     if (liba_onload) {
         LOGD("Calling liba.so JNI_OnLoad");
         jint result = liba_onload(vm, reserved);
