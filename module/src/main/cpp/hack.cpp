@@ -230,6 +230,8 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
          }
     }
          vm->DetachCurrentThread();
+    } else{
+        LOGE("Error AttachCurrentThread");
     }
     //std::thread hack_thread(hack_start, game_data_dir);
     //hack_thread.detach();
