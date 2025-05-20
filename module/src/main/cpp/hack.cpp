@@ -124,7 +124,7 @@ struct NativeBridgeCallbacks {
 bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size_t length) {
     //TODO 等待houdini初始化
     //sleep(5);
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    std::this_thread::sleep_for(std::chrono::milliseconds(400));
     void* libart = 0;
     while (libart == 0){
         libart = dlopen("libart.so", RTLD_NOW);
@@ -144,8 +144,9 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
         LOGE("GetCreatedJavaVMs error");
         return false;
     }
-
+    
     auto lib_dir = GetLibDir(vms);
+     LOGI("GetLibDir %p", lib_dir);
     if (lib_dir.empty()) {
         LOGE("GetLibDir error");
         return false;
@@ -157,6 +158,7 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
     }
 
     auto nb = dlopen("libhoudini.so", RTLD_NOW);
+    LOGI("libhoudini %p", nb);
     if (!nb) {
         auto native_bridge = GetNativeBridgeLibrary();
         LOGI("native bridge: %s", native_bridge.data());
