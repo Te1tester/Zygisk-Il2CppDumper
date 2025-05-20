@@ -126,7 +126,7 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
     void* libart = 0;
     while (libart == 0){
         libart = dlopen("libart.so", RTLD_NOW);
-        LOGI(OBFUSCATE("try load libil2cpp"));
+        LOGI("try load libil2cpp");
         sleep(1);
     }
     
