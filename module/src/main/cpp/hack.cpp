@@ -146,10 +146,14 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
         return false;
     }
      }   catch (...) {
-        LOGE("Caught unknown exception");
+        LOGE("Caught JNI_GetCreatedJavaVMs exception");
     }
-    
+    try {
     auto lib_dir = GetLibDir(vms);
+     catch (...) {
+          auto lib_dir = "";
+        LOGE("Caught GetLibDir exception");
+    }    
      LOGI("GetLibDir");
     if (lib_dir.empty()) {
         LOGE("GetLibDir error");
