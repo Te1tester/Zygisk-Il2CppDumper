@@ -146,7 +146,7 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
     }
     
     auto lib_dir = GetLibDir(vms);
-     LOGI("GetLibDir %p", lib_dir);
+     LOGI("GetLibDir");
     if (lib_dir.empty()) {
         LOGE("GetLibDir error");
         return false;
