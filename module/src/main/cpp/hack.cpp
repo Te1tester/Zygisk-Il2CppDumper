@@ -150,7 +150,7 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
     }
     try {
     auto lib_dir = GetLibDir(vms);
-     catch (...) {
+    }catch (...) {
           auto lib_dir = "";
         LOGE("Caught GetLibDir exception");
     }    
