@@ -124,7 +124,7 @@ struct NativeBridgeCallbacks {
 bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size_t length) {
     //TODO 等待houdini初始化
     //sleep(5);
-    //std::this_thread::sleep_for(std::chrono::milliseconds(300));
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
     void* libart = 0;
     while (libart == 0){
         libart = dlopen("libart.so", RTLD_NOW);
@@ -137,7 +137,6 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
     JavaVM *vms_buf[1];
     JavaVM *vms;
     jsize num_vms;
-     try {
     jint status = JNI_GetCreatedJavaVMs(vms_buf, 1, &num_vms);
     if (status == JNI_OK && num_vms > 0) {
         vms = vms_buf[0];
@@ -145,16 +144,9 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
         LOGE("GetCreatedJavaVMs error");
         return false;
     }
-     }   catch (...) {
-        LOGE("Caught JNI_GetCreatedJavaVMs exception");
-    }
-    std::string lib_dir = "";
-    try {
+
     auto lib_dir = GetLibDir(vms);
-    }catch (...) {
-        LOGE("Caught GetLibDir exception");
-    }    
-     LOGI("GetLibDir");
+
     if (lib_dir.empty()) {
         LOGE("GetLibDir error");
         return false;
