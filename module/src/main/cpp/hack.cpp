@@ -127,7 +127,6 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
     while (libart == 0){
         libart = dlopen("libart.so", RTLD_NOW);
         LOGI("try load libil2cpp");
-        sleep(1);
     }
     
     auto JNI_GetCreatedJavaVMs = (jint (*)(JavaVM **, jsize, jsize *)) dlsym(libart,
