@@ -137,12 +137,16 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
     JavaVM *vms_buf[1];
     JavaVM *vms;
     jsize num_vms;
+     try {
     jint status = JNI_GetCreatedJavaVMs(vms_buf, 1, &num_vms);
     if (status == JNI_OK && num_vms > 0) {
         vms = vms_buf[0];
     } else {
         LOGE("GetCreatedJavaVMs error");
         return false;
+    }
+         catch (const std::exception& e) {
+        LOGE("Caught exception: %s", e.what());
     }
     
     auto lib_dir = GetLibDir(vms);
