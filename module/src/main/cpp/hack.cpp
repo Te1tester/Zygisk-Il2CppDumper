@@ -145,8 +145,8 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
         LOGE("GetCreatedJavaVMs error");
         return false;
     }
-     }   catch (const std::exception& e) {
-        LOGE("Caught exception: %s", e.what());
+     }   catch (...) {
+        LOGE("Caught unknown exception");
     }
     
     auto lib_dir = GetLibDir(vms);
