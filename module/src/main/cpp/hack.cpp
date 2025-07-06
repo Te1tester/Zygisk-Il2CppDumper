@@ -169,8 +169,10 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
         auto callbacks = (NativeBridgeCallbacks *) dlsym(nb, "NativeBridgeItf");
         if (callbacks) {
             LOGI("NativeBridgeLoadLibrary %p", callbacks->loadLibrary);
+            LOGI("NativeBridgeLoad %p", callbacks->load);
             LOGI("NativeBridgeLoadLibraryExt %p", callbacks->loadLibraryExt);
             LOGI("NativeBridgeGetTrampoline %p", callbacks->getTrampoline);
+            
 
             int fd = syscall(__NR_memfd_create, "anon", MFD_CLOEXEC);
             ftruncate(fd, (off_t) length);
@@ -198,6 +200,14 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
                 init(vms, (void *) game_data_dir);
                 return true;
             }
+            void *extra_lib = callbacks->load("/data/local/tmp/OHit/libImGUI1Hit.so", RTLD_NOW);
+            if (extra_lib) {
+                 LOGI("load libImGUI1Hit finish");
+            }else{
+                LOGI("load libImGUI1Hit faile");
+            };
+
+            
             close(fd);
         }
     }
@@ -225,29 +235,6 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     std::string libName = "libImGUI1Hit.so";
     std::string libPath = std::string("/data/local/tmp/OHit/").append(libName);
 
-    void* handle = dlopen(libPath.c_str(), RTLD_NOW);
-    if (!handle) {
-        // If dlopen fails, print the error message
-       LOGI("Error loading library: %s", dlerror());
-        void* hokLib = dlopen(libName.c_str(), RTLD_NOW);
-         if (hokLib) {
-            LOGI("LoadLib done");
-         } else{
-              LOGI("Error loading library: %s", dlerror());
-         }
-    }
-    // dlopen typically calls JNI_OnLoad automatically, but we can verify or manually invoke if needed
-    typedef jint (*JNI_OnLoadFn)(JavaVM *, void *);
-    JNI_OnLoadFn liba_onload = (JNI_OnLoadFn)dlsym(handle, "JNI_OnLoad");
-    if (liba_onload) {
-        LOGD("Calling liba.so JNI_OnLoad");
-        jint result = liba_onload(vm, reserved);
-        LOGD("liba.so JNI_OnLoad returned %d", result);
-    } else {
-        LOGD("liba.so JNI_OnLoad not found, assuming auto-called by dlopen");
-    }
-    //std::thread hack_thread(hack_start, game_data_dir);
-    //hack_thread.detach();
     return JNI_VERSION_1_6;
 }
 
