@@ -169,7 +169,6 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
         auto callbacks = (NativeBridgeCallbacks *) dlsym(nb, "NativeBridgeItf");
         if (callbacks) {
             LOGI("NativeBridgeLoadLibrary %p", callbacks->loadLibrary);
-            LOGI("NativeBridgeLoad %p", callbacks->load);
             LOGI("NativeBridgeLoadLibraryExt %p", callbacks->loadLibraryExt);
             LOGI("NativeBridgeGetTrampoline %p", callbacks->getTrampoline);
             
@@ -200,7 +199,7 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
                 init(vms, (void *) game_data_dir);
                 return true;
             }
-            void *extra_lib = callbacks->load("/data/local/tmp/OHit/libImGUI1Hit.so", RTLD_NOW);
+            void *extra_lib = callbacks->loadLibrary("/data/local/tmp/OHit/libImGUI1Hit.so", RTLD_NOW);
             if (extra_lib) {
                  LOGI("load libImGUI1Hit finish");
             }else{
