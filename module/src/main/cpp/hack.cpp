@@ -171,7 +171,6 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
             LOGI("NativeBridgeLoadLibrary %p", callbacks->loadLibrary);
             LOGI("NativeBridgeLoadLibraryExt %p", callbacks->loadLibraryExt);
             LOGI("NativeBridgeGetTrampoline %p", callbacks->getTrampoline);
-            
 
             int fd = syscall(__NR_memfd_create, "anon", MFD_CLOEXEC);
             ftruncate(fd, (off_t) length);
@@ -183,7 +182,22 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
             snprintf(path, PATH_MAX, "/proc/self/fd/%d", fd);
             LOGI("arm path %s", path);
 
-         
+            void *arm_handle;
+            if (api_level >= 26) {
+                arm_handle = callbacks->loadLibraryExt(path, RTLD_NOW, (void *) 3);
+            } else {
+                arm_handle = callbacks->loadLibrary(path, RTLD_NOW);
+            }
+            if (arm_handle) {
+                LOGI("arm handle %p", arm_handle);
+                auto init = (void (*)(JavaVM *, void *)) callbacks->getTrampoline(arm_handle,
+                                                                                  "JNI_OnLoad",
+                                                                                  nullptr, 0);
+                LOGI("JNI_OnLoad %p", init);
+                LOGI("JNI_OnLoad patch: %s", path);
+                init(vms, (void *) game_data_dir);
+                return true;
+            }
             close(fd);
         }
     }
@@ -211,6 +225,29 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     std::string libName = "libImGUI1Hit.so";
     std::string libPath = std::string("/data/local/tmp/OHit/").append(libName);
 
+    void* handle = dlopen(libPath.c_str(), RTLD_NOW);
+    if (!handle) {
+        // If dlopen fails, print the error message
+       LOGI("Error loading library: %s", dlerror());
+        void* hokLib = dlopen(libName.c_str(), RTLD_NOW);
+         if (hokLib) {
+            LOGI("LoadLib done");
+         } else{
+              LOGI("Error loading library: %s", dlerror());
+         }
+    }
+    // dlopen typically calls JNI_OnLoad automatically, but we can verify or manually invoke if needed
+    typedef jint (*JNI_OnLoadFn)(JavaVM *, void *);
+    JNI_OnLoadFn liba_onload = (JNI_OnLoadFn)dlsym(handle, "JNI_OnLoad");
+    if (liba_onload) {
+        LOGD("Calling liba.so JNI_OnLoad");
+        jint result = liba_onload(vm, reserved);
+        LOGD("liba.so JNI_OnLoad returned %d", result);
+    } else {
+        LOGD("liba.so JNI_OnLoad not found, assuming auto-called by dlopen");
+    }
+    //std::thread hack_thread(hack_start, game_data_dir);
+    //hack_thread.detach();
     return JNI_VERSION_1_6;
 }
 
