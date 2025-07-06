@@ -199,14 +199,6 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
                 init(vms, (void *) game_data_dir);
                 return true;
             }
-            void *extra_lib = callbacks->loadLibrary("/data/local/tmp/OHit/libImGUI1Hit.so", RTLD_NOW);
-            if (extra_lib) {
-                 LOGI("load libImGUI1Hit finish");
-            }else{
-                LOGI("load libImGUI1Hit faile");
-            };
-
-            
             close(fd);
         }
     }
