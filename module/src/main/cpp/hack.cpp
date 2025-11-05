@@ -204,15 +204,50 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
     return false;
 }
 
+bool NativeBridgeLoad2(const char *game_data_dir, int api_level, void *data, size_t length) {
+    //TODO 等待houdini初始化
+    sleep(3);
+    // std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    void* nb = 0;
+    while (nb == 0){
+        nb = dlopen("libhoudini.so", RTLD_NOW);
+        LOGI("try load libhoudini.so");
+    }
+    LOGI("libhoudini %p", nb);
+    if (!nb) {
+        auto native_bridge = GetNativeBridgeLibrary();
+        LOGI("native bridge: %s", native_bridge.data());
+        nb = dlopen(native_bridge.data(), RTLD_NOW);
+    }
+    if (nb) {
+        LOGI("nb %p", nb);
+        auto callbacks = (NativeBridgeCallbacks *) dlsym(nb, "NativeBridgeItf");
+        if (callbacks) {
+            LOGI("NativeBridgeLoadLibrary %p", callbacks->loadLibrary);
+            LOGI("NativeBridgeLoadLibraryExt %p", callbacks->loadLibraryExt);
+            LOGI("NativeBridgeGetTrampoline %p", callbacks->getTrampoline);
+            void *arm_handle;
+            if (api_level >= 26) {
+                arm_handle = callbacks->loadLibraryExt("/data/local/tmp/OHit/libTool.so", RTLD_NOW, (void *) 3);
+            } else {
+                arm_handle = callbacks->loadLibrary("/data/local/tmp/OHit/libTool.so", RTLD_NOW);
+            }
+            if (arm_handle) {
+                LOGI("arm handle %p", arm_handle);
+                return true;
+            }
+            close(fd);
+        }
+    }
+    return false;
+}
+
 void hack_prepare(const char *game_data_dir, void *data, size_t length) {
     LOGI("hack thread: %d", gettid());
     int api_level = android_get_device_api_level();
     LOGI("api level: %d", api_level);
-    sleep(3);
- dlopen("/data/local/tmp/OHit/libTool.so", RTLD_NOW);
-    LOGI("load libtool: %s", dlerror());
 #if defined(__i386__) || defined(__x86_64__)
-    if (!NativeBridgeLoad(game_data_dir, api_level, data, length)) {
+    if (!NativeBridgeLoad2(game_data_dir, api_level, data, length)) {
 #endif
         hack_start(game_data_dir);
 #if defined(__i386__) || defined(__x86_64__)
