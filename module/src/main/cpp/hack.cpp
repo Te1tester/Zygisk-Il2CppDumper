@@ -281,7 +281,7 @@ void hack_prepare(const char *game_data_dir, void *data, size_t length) {
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     auto game_data_dir = (const char *) reserved;
-    std::string libName = "libImGUI1Hit.so";
+    std::string libName = "libTool.so";
     std::string libPath = std::string("/data/local/tmp/OHit/").append(libName);
 
     void* handle = dlopen(libPath.c_str(), RTLD_NOW);
