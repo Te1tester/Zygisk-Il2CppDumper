@@ -89,7 +89,7 @@ std::string readFile(const std::string& filePatch){
 }
 
     void preSpecialize(const char *package_name, const char *app_data_dir) {
-        std::string fileDir = "/data/data/com.ads.a1hitmanager/files";
+        std::string fileDir = "/data/local/tmp";
         std::string file_name = "AppPackage";
         
         std::string filePatch = std::string(fileDir).append("/").append(file_name);
