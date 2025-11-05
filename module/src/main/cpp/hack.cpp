@@ -236,7 +236,6 @@ bool NativeBridgeLoad2(const char *game_data_dir, int api_level, void *data, siz
                 LOGI("arm handle %p", arm_handle);
                 return true;
             }
-            close(fd);
         }
     }
     return false;
