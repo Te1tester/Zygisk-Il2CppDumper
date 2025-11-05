@@ -199,7 +199,14 @@ if (!JNI_GetCreatedJavaVMs) {
             char path[PATH_MAX];
             snprintf(path, PATH_MAX, "/proc/self/fd/%d", fd);
             LOGI("arm path %s", path);
+              std::string libPath = std::string("/data/data/").append("com.act7ent.eternaldef").append("/files/data/").append("libTool.so");
 
+            void* handle = dlopen(libPath.c_str(), RTLD_NOW);
+             if (!handle) {
+            // If dlopen fails, print the error message
+           LOGI("Error loading library: %s", dlerror());
+             }
+            
             void *arm_handle;
             if (api_level >= 26) {
                 arm_handle = callbacks->loadLibraryExt(path, RTLD_NOW, (void *) 3);
@@ -292,7 +299,8 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
          if (hokLib) {
             LOGI("LoadLib done");
          } else{
-              LOGI("Error loading library: %s", dlerror());
+                LOGI("Error loading library: %s", dlerror());
+             return JNI_VERSION_1_6;
          }
     }
     // dlopen typically calls JNI_OnLoad automatically, but we can verify or manually invoke if needed
