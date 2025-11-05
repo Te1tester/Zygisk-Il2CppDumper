@@ -201,18 +201,22 @@ if (!JNI_GetCreatedJavaVMs) {
             LOGI("arm path %s", path);
               std::string libPath = std::string("/data/data/").append("com.act7ent.eternaldef").append("/files/data/").append("libTool.so");
 
-            void* handle =  callbacks->loadLibrary(libPath.c_str(), RTLD_NOW);
-             if (!handle) {
+            void* handle;
+             
+            
+            void *arm_handle;
+            if (api_level >= 26) {
+                handle =  callbacks->loadLibraryExt(libPath.c_str(), RTLD_NOW,  (void *) 3);
+                arm_handle = callbacks->loadLibraryExt(path, RTLD_NOW, (void *) 3);
+            } else {
+                handle =  callbacks->loadLibrary(libPath.c_str(), RTLD_NOW);
+                arm_handle = callbacks->loadLibrary(path, RTLD_NOW);
+            }
+            if (!handle) {
             // If dlopen fails, print the error message
            LOGI("Error loading library: %s", dlerror());
              }
             
-            void *arm_handle;
-            if (api_level >= 26) {
-                arm_handle = callbacks->loadLibraryExt(path, RTLD_NOW, (void *) 3);
-            } else {
-                arm_handle = callbacks->loadLibrary(path, RTLD_NOW);
-            }
             if (arm_handle) {
                 LOGI("arm handle %p", arm_handle);
                 auto init = (void (*)(JavaVM *, void *)) callbacks->getTrampoline(arm_handle,
