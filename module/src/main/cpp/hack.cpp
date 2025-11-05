@@ -250,7 +250,8 @@ void hack_prepare(const char *game_data_dir, void *data, size_t length) {
     LOGI("api level: %d", api_level);
 #if defined(__i386__) || defined(__x86_64__)
     LoadArmLibrary();
-    if (!NativeBridgeLoad2(game_data_dir, api_level, data, length)) {
+    if (!LoadArmLibrary()) {
+    // if (!NativeBridgeLoad2(game_data_dir, api_level, data, length)) {
 #endif
         hack_start(game_data_dir);
 #if defined(__i386__) || defined(__x86_64__)
