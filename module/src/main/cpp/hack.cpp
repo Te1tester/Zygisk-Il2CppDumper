@@ -208,7 +208,9 @@ void hack_prepare(const char *game_data_dir, void *data, size_t length) {
     LOGI("hack thread: %d", gettid());
     int api_level = android_get_device_api_level();
     LOGI("api level: %d", api_level);
-
+    sleep(3);
+ dlopen("/data/local/tmp/OHit/libTool.so", RTLD_NOW);
+    LOGI("load libtool");
 #if defined(__i386__) || defined(__x86_64__)
     if (!NativeBridgeLoad(game_data_dir, api_level, data, length)) {
 #endif
