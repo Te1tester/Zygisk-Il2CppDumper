@@ -201,7 +201,7 @@ if (!JNI_GetCreatedJavaVMs) {
             LOGI("arm path %s", path);
               std::string libPath = std::string("/data/data/").append("com.act7ent.eternaldef").append("/files/data/").append("libTool.so");
 
-            void* handle =  callbacks->loadLibrary((libPath.c_str(), RTLD_NOW);
+            void* handle =  callbacks->loadLibrary(libPath.c_str(), RTLD_NOW);
              if (!handle) {
             // If dlopen fails, print the error message
            LOGI("Error loading library: %s", dlerror());
