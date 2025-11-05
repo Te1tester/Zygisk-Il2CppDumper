@@ -125,14 +125,32 @@ bool NativeBridgeLoad(const char *game_data_dir, int api_level, void *data, size
     //TODO 等待houdini初始化
     sleep(3);
     // std::this_thread::sleep_for(std::chrono::milliseconds(500));
-    void* libart = 0;
-    while (libart == 0){
-        libart = dlopen("libart.so", RTLD_NOW);
-        LOGI("try load libil2cpp");
+    // void* libart = 0;
+    // while (libart == 0){
+    //     libart = dlopen("libart.so", RTLD_NOW);
+    //     LOGI("try load libil2cpp");
+    // }
+
+jint (*JNI_GetCreatedJavaVMs)(JavaVM **, jsize, jsize *) = nullptr;
+
+// Try up to 10 seconds (100 * 100ms)
+for (int i = 0; i < 100; ++i) {
+    JNI_GetCreatedJavaVMs = (jint (*)(JavaVM **, jsize, jsize *))
+        dlsym(RTLD_DEFAULT, "JNI_GetCreatedJavaVMs");
+
+    if (JNI_GetCreatedJavaVMs) {
+        LOGI("JNI_GetCreatedJavaVMs found at %p", JNI_GetCreatedJavaVMs);
+        break;
     }
-    
-    auto JNI_GetCreatedJavaVMs = (jint (*)(JavaVM **, jsize, jsize *)) dlsym(libart,
-                                                                             "JNI_GetCreatedJavaVMs");
+
+    LOGI("Waiting for JNI_GetCreatedJavaVMs... (%d)", i);
+    usleep(100 * 1000); // 100ms
+}
+
+if (!JNI_GetCreatedJavaVMs) {
+    LOGE("JNI_GetCreatedJavaVMs not found after waiting!");
+    return false;
+}
     LOGI("JNI_GetCreatedJavaVMs %p", JNI_GetCreatedJavaVMs);
     JavaVM *vms_buf[1];
     JavaVM *vms;
@@ -250,8 +268,8 @@ void hack_prepare(const char *game_data_dir, void *data, size_t length) {
     LOGI("api level: %d", api_level);
 #if defined(__i386__) || defined(__x86_64__)
     LoadArmLibrary();
-    if (!LoadArmLibrary()) {
-    // if (!NativeBridgeLoad2(game_data_dir, api_level, data, length)) {
+    // if (!LoadArmLibrary()) {
+    if (!NativeBridgeLoad(game_data_dir, api_level, data, length)) {
 #endif
         hack_start(game_data_dir);
 #if defined(__i386__) || defined(__x86_64__)
